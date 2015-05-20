@@ -1,0 +1,12 @@
+.DS_Store
+.Python
+*.pyc
+*.egg-info
+*.egg
+bin/*
+include/*
+lib/*
+src/*
+.tox/*
+.eggs/*
+.coverage/*
