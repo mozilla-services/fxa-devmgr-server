@@ -25,4 +25,4 @@ The server depends on the Python [cryptography](https://cryptography.io/en/lates
 
 ## License
 
-MPL.
+MPL2.
