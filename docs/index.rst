@@ -48,4 +48,6 @@ field.
 .. http:delete:: /device/(uuid:device_id)
    :synopsis: Delete a device
 
+    This method requires an OAuth token issued within the last 5 minutes.
+
     :statuscode 200: Device deleted.
