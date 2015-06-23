@@ -26,28 +26,27 @@ field.
 .. http:post:: /device
    :synopsis: Register a new device
 
-    :form name: User-friendly device name
-    :form endpoint: (optional) Push endpoint for this device.
-    :responseheader Device-ID: UUID uniquely identifying the device.
-    :statuscode 200: Device registered.
-    :statuscode 401: Bad OAuth token.
+   :json name: User-friendly device name.
+   :json endpoint: (Optional) Endpoint to store.
+   :resjson device-kd: UUID of the device registration.
+   :reqheader Content-Type: application/json
+   :resheader Content-Type: application/json
 
 .. http:get:: /device
    :synopsis: Get a list of all registered devices.
 
-    :resjson devices: List of registered devices, their names, uuid's, and
-                      their push endpoints.
+   :resheader Content-Type: application/json
+   :resjson devices: List of registered devices, their names, uuid's, and
+                     their push endpoints.
 
 .. http:patch:: /device/(uuid:device_id)
    :synopsis: Update the Push endpoint for the device
 
-    :form endpoint: Push endpoint for this device.
-    :statuscode 200: Successful endpoint update.
-    :statuscode 401: Bad OAuth token.
+   :json endpoint: New Push Endpoint.
+   :reqheader Content-Type: application/json
+   :resheader Content-Type: application/json
 
 .. http:delete:: /device/(uuid:device_id)
    :synopsis: Delete a device
 
-    This method requires an OAuth token issued within the last 5 minutes.
-
-    :statuscode 200: Device deleted.
+   This method requires an OAuth token issued within the last 5 minutes.

@@ -21,7 +21,10 @@ requires = [
     'cryptography>=0.2',
     'mohawk>=0.2.2',
     'PyFxA>=0.0.6',
-    'tornado>=4.1',
+    'pyramid>=1.5.7',
+    'sqlalchemy>=1.0.5',
+    'waitress',
+    'pyramid_debugtoolbar',
 ]
 
 setup(name='devmgr',
@@ -35,14 +38,13 @@ setup(name='devmgr',
           'Programming Language :: Python',
       ],
       keywords='firefox accounts device manager',
-      author='Kit Cambridge',
-      author_email='github@kitcambridge.be',
+      author='Mozilla Services',
       url='https://github.com/kitcambridge/fxa-device-manager-server',
       license='MPL 2.0',
       dependency_links=dependency_links,
       install_requires=requires,
-      entry_points='''
-      [console_scripts]
-      devmgr = devmgr.main:main
-      '''
+      entry_points="""\
+      [paste.app_factory]
+      main = devmgr.app:make_app
+      """,
       )
