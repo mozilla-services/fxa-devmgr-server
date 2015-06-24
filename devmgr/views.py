@@ -5,7 +5,8 @@ from devmgr.resources import Registration, Device
 
 def new_device(context, request):
     data = json.loads(request.body)
-    device = context.new_device(data["name"], data.get("endpoint"))
+    device = context.new_device(request.account_id, data["name"],
+                                data.get("endpoint"))
     return {"device-id": device.uuid}
 
 
@@ -26,8 +27,11 @@ def update_device_metadata(context, request):
 
 
 def include_views(config):
-    config.add_view(new_device, context=Registration, request_method="POST")
-    config.add_view(list_devices, context=Registration, request_method="GET")
-    config.add_view(delete_device, context=Device, request_method="DELETE")
+    config.add_view(new_device, context=Registration, permission="create",
+                    request_method="POST")
+    config.add_view(list_devices, context=Registration, permission="get",
+                    request_method="GET")
+    config.add_view(delete_device, context=Device, permission="delete",
+                    request_method="DELETE")
     config.add_view(update_device_metadata, context=Device,
-                    request_method="PATCH")
+                    permission="update", request_method="PATCH")
