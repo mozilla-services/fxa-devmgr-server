@@ -1,6 +1,14 @@
 import logging
+import time
 
 from pyramid.security import Everyone, Authenticated
+
+
+class Creds(object):
+    """Basic Credentials object"""
+    def __init__(self, account_id, recent=False):
+        self.account_id = account_id
+        self.recent = recent
 
 
 class DevMgrAuthenticationPolicy(object):
@@ -19,3 +27,26 @@ class DevMgrAuthenticationPolicy(object):
                 )
         logging.info("Effective principals: %s", effective_principals)
         return effective_principals
+
+
+def verify_auth(event):
+    req = event.request
+    req.credentials = None
+    token_str = req.headers.get("Authorization")
+    if not token_str:
+        return
+
+    d = token_str.strip().split()
+    if len(d) != 2:
+        logging.debug("Length of authorization is not 2")
+        return
+    typ, token = d
+    if typ != "Bearer":
+        logging.debug("Not a bearer token")
+        return
+
+    result = req.registry.fxa_oauth.verify_token(token)
+    created = result["created_at"] / 1000
+    recent = int(time.time())-created < 600
+    cred = Creds(account_id=result["user"], recent=recent)
+    req.credentials = cred
