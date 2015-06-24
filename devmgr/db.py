@@ -24,4 +24,4 @@ class Device(Base):
             setattr(self, key, val)
 
     def to_json(self):
-        return dict(uuid=uuid, name=name, endpoint=endpoint)
+        return dict(uuid=self.uuid, name=self.name, endpoint=self.endpoint)

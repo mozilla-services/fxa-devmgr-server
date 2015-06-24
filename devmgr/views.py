@@ -5,7 +5,7 @@ from devmgr.resources import Registration, Device
 
 def new_device(context, request):
     data = json.loads(request.body)
-    device = context.new_device(request.account_id, data["name"],
+    device = context.new_device(request.credentials.account_id, data["name"],
                                 data.get("endpoint"))
     return {"device-id": device.uuid}
 
@@ -15,14 +15,13 @@ def list_devices(context, request):
 
 
 def delete_device(context, request):
-    request.registry.db_session.delete(context)
+    request.db.delete(context)
     return {}
 
 
 def update_device_metadata(context, request):
     data = json.loads(request.body)
     context.endpoint = data["endpoint"]
-    request.registry.db_session.commit()
     return {}
 
 
