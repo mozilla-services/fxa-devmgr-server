@@ -1,3 +1,4 @@
+from sqlalchemy.orm import joinedload
 from pyramid.security import Allow, Authenticated
 
 from devmgr.db import Device
@@ -16,7 +17,8 @@ class Registration(object):
             )
 
     def __getitem__(self, name):
-        device = self.request.db.query(Device).get(name)
+        device = self.request.db.query(Device).options(
+            joinedload(Device.tokens)).get(name)
         if device:
             device.__acl__ = [
                 (Allow, "account_id:%s" % device.uuid, "update"),

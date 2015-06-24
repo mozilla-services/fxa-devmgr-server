@@ -40,9 +40,10 @@ field.
                      their push endpoints.
 
 .. http:patch:: /device/(uuid:device_id)
-   :synopsis: Update the Push endpoint for the device
+   :synopsis: Update the Push endpoint or add token hashes for the device.
 
-   :json endpoint: New Push Endpoint.
+   :json endpoint: (Optional) New Push Endpoint.
+   :json token_hashes: (Optional) Add list of token hash.
    :reqheader Content-Type: application/json
    :resheader Content-Type: application/json
 

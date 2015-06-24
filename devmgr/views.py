@@ -1,6 +1,7 @@
 import json
 
-from devmgr.resources import Registration, Device
+from devmgr.db import Device, Token
+from devmgr.resources import Registration
 
 
 def new_device(context, request):
@@ -21,7 +22,11 @@ def delete_device(context, request):
 
 def update_device_metadata(context, request):
     data = json.loads(request.body)
-    context.endpoint = data["endpoint"]
+    if "endpoint" in data:
+        context.endpoint = data["endpoint"]
+    for th in data.get("token_hashes", []):
+        if th not in context.tokens:
+            context.tokens[th] = Token(th)
     return {}
 
 
