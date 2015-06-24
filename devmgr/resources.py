@@ -10,9 +10,10 @@ class Registration(object):
 
     def __init__(self, request):
         self.request = request
-        self.__acl__.append(
-            (Allow, "account_id:%s" % request.credentials.account_id, "get")
-        )
+        if request.credentials:
+            self.__acl__.append(
+                (Allow, "account_id:%s" % request.credentials.account_id, "get")
+            )
 
     def __getitem__(self, name):
         device = self.request.db.query(Device).get(name)

@@ -1,3 +1,7 @@
+import logging
+import time
+
+import fxa.oauth
 import pyramid.renderers
 from pyramid.authorization import ACLAuthorizationPolicy
 from pyramid.config import Configurator
@@ -16,9 +20,30 @@ class Creds(object):
 
 def verify_auth(event):
     req = event.request
+    req.credentials = None
     cred = Creds()
-    cred.account_id = "fred"
     cred.recent = False
+    cred.account_id = None
+    token_str = req.headers.get("Authorization")
+    if not token_str:
+        return
+
+    d = token_str.strip().split()
+    if len(d) != 2:
+        logging.debug("Length of authorization is not 2")
+        return
+    typ, token = d
+    if typ != "Bearer":
+        logging.debug("Not a bearer token")
+        return
+
+    result = req.registry.fxa_oauth.verify_token(token)
+    created = result["created_at"] / 1000
+
+    cred.account_id = result["user"]
+    now = int(time.time())
+    if now-created < 600:
+        cred.recent = True
     req.credentials = cred
 
 
@@ -49,6 +74,10 @@ def make_app(global_config, db_uri="sqlite:////tmp/devmgr.db", **settings):
     )
     config.add_subscriber(verify_auth, NewRequest)
     config.add_request_method(db, reify=True)
+
+    config.registry.fxa_oauth = fxa.oauth.Client(
+        server_url=settings["oauth_server_url"],
+    )
 
     db_engine = create_engine(db_uri)
     session_factory = sessionmaker(bind=db_engine)
